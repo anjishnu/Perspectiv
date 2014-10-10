@@ -1,0 +1,36 @@
+
+        To the Editor:
+        Re ''The Road to Reliable Elections'' (editorial, Dec. 11):
+        You talk about electronic voting machines that ''produce paper records that voters can review to ensure that their votes were correctly recorded.''
+        But a paper receipt proves nothing about how a vote was actually recorded.
+        A corrupted voting machine could print out a voter's choices correctly but record them differently.
+        To verify votes, a record of each vote, along with a unique key provided to the voter, could be published.
+        Then each voter could check his or her vote against the record. If a discrepancy is claimed, the paper record could be checked.
+        The method you propose is not benign and would lead to a false sense of security. The only thing it is good for is recounts.
+        A. P. Healy  Chappaqua, N.Y., Dec. 11, 2006
+        To the Editor:
+        Re ''Big Shift Seen in Voting Methods With Turn Back to a Paper Trail'' (front page, Dec. 8):
+        Eliminating long lines in voting precincts should be part of election changes by 2008.
+        Besides problematic voting machines, we need to address mismatches between the numbers of voting machines with support personnel in a precinct and patterns of voter arrivals.
+        Long lines can cause would-be voters to abstain, a stealth disenfranchisement. We need a federal standard for a maximum waiting time to cast a vote.
+        Science can help.
+        Queuing theory and optimization, widely used in the public and private sectors to manage long lines, can determine the deployment of voting machines, meeting the waiting-time standard and assuring equal voting accessibility to all.
+        Such science will discourage partisan authorities to manipulate voting resources in attempts to deter voters who are likely to favor their political opponents.
+        Alexander S. Belenky  Richard C. Larson  Cambridge, Mass., Dec. 9, 2006
+        The writers are, respectively, a visiting scholar and director of the Center for Engineering Systems at the Massachusetts Institute of Technology.
+        To the Editor:
+        Optically scanned paper ballots filled out by hand or by a ballot marking machine work. The paper ballot is then fed into a high-speed scanner.
+        The voter gets to check his own ballot, which is a reliable, verifiable audit trail.
+        It is a trivial matter for a programmer to change computer code so that the voter sees and prints a receipt correctly and then the machine changes the count internally.
+        The rogue computer program can then erase its tracks and become invisible.
+        If there is a challenge, the optically scanned paper ballot must be the vote that counts. No vendor should be considered who refuses to make his source code available.
+        To paraphrase an old saying, A billion here and a billion there in lost sales gets a vendor's attention.
+        William Zeph Ginsberg  New York, Dec. 8, 2006
+        To the Editor:
+        You say advocates for disabled people will not support changes in voting legislation because according to these advocates, ''touch-screen machines are the easiest for blind people to use.'' This is simply not the case.
+        As a blind voter, I have always dreamed of having the opportunity to cast an independent, private and verifiable vote, but the modified touch-screen machines have not made this a reality for me.
+        I have been fortunate to have friends who helped me cast my vote, but I have not really been able to verify that my vote has been cast correctly.
+        Fortunately, there are both high-tech and low-tech solutions to this problem that give people with disabilities access to the ballot.
+        We must work to make it possible for everyone, with or without disabilities, to have the opportunity to cast a truly independent, private and verifiable vote.
+        Suzanne Erb  Philadelphia, Dec. 10, 2006
+      

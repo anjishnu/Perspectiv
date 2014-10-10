@@ -1,0 +1,10 @@
+
+        Undersea creatures can be very sensitive to light, complicating attempts to find and photograph them. Lights on vessels venturing into a world without sunlight drive species away, as can bright lights for video. Infrared light decays rapidly in seawater. But Edith A. Widder, a marine biologist at the Ocean Research and Conservation Association, has developed a system that uses a spectrum of light known as far red. Called Eye in the Sea, the system will be used starting in November 2007 as part of the Monterey Bay Aquarium Research Institute cabled observatory, a remotely controlled camera platform that can be lowered to the dark depths of the sea.
+        ANGELA M. H. SCHUSTER
+        SEEING WITHOUT BEING SEEN  Infrared light used for terrestrial observation decays rapidly in seawater, limiting its utility in ocean exploration. Far-red light can be seen by video cameras but is invisible to ocean life.
+        Chart tracks Wavelength, In Nanometers.
+        Diagram shows:  BIOLUMINESCENCE SENSOR  VIDEO CAMERA: Sensitive enough to record dim far-red light and bioluminescence.  L.E.D. ILLUMINATORS (2 RED, 2 WHITE)  CURRENT METER  TELEMETRY ELECTRONICS  BAIT BOX: Used to attract some sea creatures.  SCALING LASERS (2): Appear as red dots a known distance apart to gauge the size of organisms.  HYDROPHONE  ELECTRONICS CABLE  ELECTRONIC JELLYFISH: An electronic device imitates a jellyfish's bioluminescent display to lure large, active predators into view.
+        DEEP SEA ALARM  If attacked by a predator, Atolla wyvillei, a common deep-sea jellyfish, will produce a pinwheel display of bioluminescence, right, to entice far larger predators to attack its attacker, affording a chance for escape.
+        EARLY RESULTS  A new species of squid was among the first images captured by a prototype EITS in the Gulf of Mexico.
+        (Source by Ocean Research and Conservation Association)  SCIENCE ILLUSTRATED
+      

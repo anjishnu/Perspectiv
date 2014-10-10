@@ -1,0 +1,38 @@
+
+        As he leads his third spacewalk today during the shuttle Discovery's mission to the International Space Station, one word is likely to be on Capt. Robert L. Curbeam Jr.'s mind: ammonia.
+        The foul-smelling chemical is used in the space station's cooling systems because its low freezing point is well suited to the chill of space.
+        But ammonia is also highly toxic, and it was at the center of a frightening 2001 incident in which ammonia leaked from a cooling line and coated Captain Curbeam's spacesuit.
+        It is a little-told story of cool competence and quick reaction under pressure, and also a reminder, as the nation plans to return astronauts to the Moon, that space is a tough neighborhood.
+        Captain Curbeam could have to deal with ammonia once again if there are problems with today's spacewalk that require the replacement of a cooling pump.
+        The spacewalk will be devoted to rewiring the electrical system of the International Space Station so it can begin drawing power from solar arrays installed on the previous mission.
+        Once the power starts coursing through its new path, electrical components along the way will begin to heat up. Cooling pumps will keep the components from overheating.
+        Mission planners have fretted that either of the two pumps, which have gone unused for four years, might not start up. In a similar spacewalk on Thursday, the first pump started up without a problem. If the second pump fails to start today, Captain Curbeam will have to replace it in an additional spacewalk. And that would require him to disconnect and reconnect ammonia lines.
+        In a briefing with reporters last month, he said that would not be a happy moment.
+        ''It's something I'm probably a little more worried about'' than the electrical work that is the main purpose of the spacewalks, he said with a mirthless laugh.
+        The 2001 incident was generally described as a minor mishap in the shuttle Atlantis' mission to complete the space station's Destiny science module. Today, however, everyone involved recalls it as a stunning moment, rife with danger and soul-searching.
+        The scene was described grippingly by Thomas D. Jones, Captain Curbeam's partner in that spacewalk, in his book ''Sky Walking: An Astronaut's Memoir'' (Smithsonian Books, 2006).
+        He recalled hearing something that nobody wants to hear in space: ''Uh-oh.''
+        Referring to Captain Curbeam by his nickname, Mr. Jones wrote: ''It was Beamer, his voice flat and matter-of-fact. 'Um, I think I've got a leak here.' ''
+        His voice was so level that Mr. Jones did not worry at first. But when he looked up, he wrote, he saw ''a silvery, fluttering stream of snowflakes jetting out from Beamer's work area.''
+        ''The flakes were being driven outward by wisps of a faintly visible vapor, like a fine sea spray caught in a gust of wind,'' the memoir continued. ''Sunlight sparkled off of the fat flakes as they tumbled outward to form an expanding cloud on the station's starboard side; they swirled and darted in the gas stream, glowing fireflies in the inky void. It's beautiful! But even as my eyes marveled at the sight, my stomach knotted with anxiety.''
+        The ammonia, he knew, was essential to the new $1.4 billion lab. ''Worst case: we might not have enough cooling capacity for lab activation,'' Mr. Jones wrote. ''Our crew would have delivered a billion-dollar cripple'' requiring another mission to fix.
+        Captain Curbeam moved quickly to cut off the flow by pulling on a locking device known as a bailer bar. But he found that it was frozen in place. After straining against it for three minutes, he was able to shut off the flow.
+        ''It basically took all the strength that I had,'' Captain Curbeam said in an interview during premission briefings for reporters last month. He strained so hard against the bar and the button that should have freed it that he flexed the metal foot restraint he was standing on, he said.
+        And then came the second-guessing. ''I sat there and said, 'Oh, my gosh -- what did I do wrong?' '' In the perfectionist culture of the astronaut corps, he was certain he had made a grievous mistake.
+        Just a week and a half before the 2001 flight, the crew had received a briefing on shutting off ammonia lines during spacewalks. The session was tucked into the schedule during a delay in launching; NASA's experts believed a leak was so unlikely that the procedures were not included in the formal training. Captain Curbeam said the briefer had told the astronauts, ''I really sincerely doubt you'll have a leaky valve, and I can tell you for sure you won't have a male Q.D. leak'' -- that is, a leak from the protruding portion of the quick-disconnect plug and socket used to join lines.
+        The ammonia, however, was gushing out of a male quick-disconnect connector.
+        Before Captain Curbeam could find out whether he had caused the leak, he had to deal with a suit now covered with a toxic chemical. The problem, he recalled, was ''pretty severe,'' since ''people die in industrial accidents with anhydrous ammonia.''
+        In an interview, Mr. Jones said, ''He was this Frosty the Snowman figure'' with ice crystals an inch thick on his helmet and suit.
+        Mission controllers instructed Mr. Jones to get a brush out of a tool kit and brush away as much of the frost as he could. They then had Captain Curbeam remain outside the shuttle for an entire orbit of the Earth to let the heat of the Sun evaporate the remaining ammonia.
+        For most astronauts, time spent outside of the craft without having work to distract from the view is one of the great gifts of spaceflight. But Captain Curbeam said it was torture.
+        ''I'm just sitting there, you know, sun tanning,'' he recalled, and ''I didn't have anything to keep my brain busy anymore.''
+        Mr. Jones said Captain Curbeam later told him he worried that it was his last spacewalk: ''Oh, great. I'm a marked man'' who had lost NASA's trust.
+        The pilot on that 2001 flight, Mark L. Polansky, is the commander of the current Discovery flight. In an interview, he, too, recalled the 2001 spacewalk as extremely tense.
+        ''It's something I hope never to repeat,'' Mr. Polansky said.
+        The potential for contamination affected the entire crew, Mr. Polansky recalled. ''Once we open up the hatch,'' he said, ''we're going to be exposed to it.''
+        After Captain Curbeam and Mr. Jones were back inside, they pressurized and then vented and repressurized the air lock to purge ammonia, and the crew wore oxygen masks for about 20 minutes while the life-support systems filtered poisons from the air.
+        Five hours after the spill began, Captain Curbeam received word that the problem resided in the valve; he had done nothing wrong. And he also learned that only 5 percent of the ammonia had escaped from the system before he closed the valve, leaving enough for the lab to operate normally.
+        ''That was a pretty good feeling,'' he said.
+        Solar Panels Still Jammed
+        HOUSTON, Dec. 15 (Reuters) -- Efforts by NASA ground controllers failed on Friday to free a jammed solar panel on the International Space Station. Thomas Reiter, an astronaut, also tried to free the array by vigorously exercising on a resistance machine that in the past had been shown to vibrate the panels. He had no luck. ''I was training for that for half a year,'' he joked.
+      
