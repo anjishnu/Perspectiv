@@ -1,3 +1,14 @@
+"""
+Script to parse XML from the NYT corpus 
+:-: Anjishnu Kumar
+
+Simple usage:
+
+:-: python nytimes_parser.py input_dir output_dir
+
+"""
+
+import sys
 from xml.dom import minidom
 import os
 import xml.etree.ElementTree as ET
@@ -31,6 +42,10 @@ def store(store_path, text):
         f.write(text)
     return True
 
+
+"""
+Currently just working with extracted directories
+"""
 def process_files(inp_dir, out_dir):
     for name, full_path in gen_file_paths(inp_dir):
         try:
@@ -44,6 +59,23 @@ def process_files(inp_dir, out_dir):
             print "Couldn't process", name
             print e.message
 
+"""
+
+"""
+def main():
+    args = sys.argv[1:]
+    if len(args)!=2:
+        print "Invalid number of arguments"
+        print "usage->"
+        print ":-: python nytimes_parser input_dir output_dir"
+        print "NOTE: remember to extract the tgz model in the directory you are extracting from"
+        return 
+    input_dir, output_dir = args
+    input_dir, output_dir = map(os.path.abspath, [input_dir, output_dir])
+    print input_dir, output_dir
+    #process_files(input_dir, output_dir)
+
 if __name__ == "__main__":
-    process_files(test_dir, output_dir)
+    #process_files(test_dir, output_dir)
+    main()
     print "Execution complete"
