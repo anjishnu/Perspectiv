@@ -29,10 +29,12 @@ stoplist  = load_stopwords("stopwords.txt")
 WORDVEC_SIZE = 200
 GOOGLE_DATA  = "GoogleNews-vectors-negative300.bin.gz"
 NUM_KMEANS_CLUSTERS=10
+
 """ 
 -------------------------------------------------------------
 -------------------------------------------------------------
 """
+
 def load_data_folder(data_dir=data_dir):
     """
     Returns a hashmap of article names mapped to their actual text
@@ -40,6 +42,14 @@ def load_data_folder(data_dir=data_dir):
     articles = {}
     for article in os.listdir(data_dir):
         articles[article]=load_doc(os.path.join(data_dir, article))
+    return articles
+
+def load_specific_data(filenames, data_dir=data_dir):
+    filenames = set(map(lambda name: name.replace(' ','_'), filenames))
+    articles = {}
+    for article in os.listdir(data_dir):
+        if article in filenames:
+            articles[article]= load_doc(os.path.join(data_dir,article))
     return articles
 
 def load_doc(fpath):
@@ -53,10 +63,17 @@ def load_doc(fpath):
             text = reduce(lambda x,y:x+y, text)
     return text
 
-def gen_load(data_dir):
+def load_raw(fpath):
+    text = ""
+    with open(fpath, 'r') as f:
+        text = f.readlines()
+    return text
+
+def gen_load(data_dir, sset):
     """Generator to return every sentence in a directory- to train the 
     text models"""
-    for article in os.listdir(data_dir):
+    article_list = os.listdir(data_dir) if not sset else sset
+    for article in article_list:
 		fpath = os.path.join(data_dir,article)
 		with open(fpath, 'r') as f:
 			text = f.readlines() + [article.rpartition(".txt")[0]]
@@ -114,11 +131,10 @@ def word2vectorize(w2v , articles):
 	vector = np.zeros((len(articles), w2v.layer1_size) )
 	for index, key in enumerate(articles):
 		count=0
-		for word in articles[key]:
+		for word in articles[key].split():
 			if word in w2v:
 				vector[index]+=w2v[word]
 				count+=1
-		#vector[index]/=float(count)
 		#normalize length of vector
 		veclength = reduce(lambda x,y: x+y, 
                                    map(lambda x: x**2, 
@@ -137,11 +153,12 @@ def kmeans_clusters(keys, data_matrix, n_clusters=NUM_KMEANS_CLUSTERS):
 	km.fit(data_matrix)
 	return km.predict(data_matrix)
 
-def LDA_train(wdict, articles, bow_corpus, num_topics=100):
-    lda_model = models.ldamodel.LdaModel(id2word=wdict, num_topics=num_topics)
+def LDA_train(wdict, articles, corpus, num_topics=100):    
+    lda_model = models.ldamodel.LdaModel(corpus, id2word=wdict, 
+                                         num_topics=num_topics)
     lda_model.VAR_MAXITER = 5000
     lda_model.VAR_THRESH  = 0.001
-    lda_model.update(bow_corpus)
+    lda_model.update(corpus)
     return lda_model
 
 """
@@ -152,10 +169,10 @@ g_vec = None
 g_coords = None
 g_clust  = None
 
-def LDA2Vec(lda_model, bow_corpus):
+def LDA2Vec(lda_model, corpus):
     sparse = []
-    for bow in bow_corpus:
-        sparse+=[lda_model[bow]]
+    for doc in corpus:
+        sparse+=[lda_model[doc]]
     vector = np.zeros((len(sparse),
                        lda_model.num_topics), 
                       dtype = np.float64)
@@ -164,6 +181,23 @@ def LDA2Vec(lda_model, bow_corpus):
             vector[index][feat_index]= value
     return vector
 
+from nltk.corpus import sentiwordnet as swn
+print "nltk loaded"
+def subjectivity_of(text):
+    sub = 0 #SUBJECTIVITY
+    w_counts = 0
+    for word in text.split():
+        ssets = swn.senti_synsets(word)
+        if ssets: 
+            sub+= 1-ssets[0].obj_score()
+            w_counts += 1;
+    return sub
+
+def senti_run(articles):
+    senti_hash = {}
+    for key in articles:
+        senti_hash[key] = subjectivity_of(articles[key])
+    return senti_hash
 
 def LDA_run():
     global g_lda, g_vec, g_coords, g_clust
@@ -173,20 +207,21 @@ def LDA_run():
     corpus = [bag_of_wordify(articles[key]) for key in articles]
     wdict  = corpora.Dictionary(corpus)
     bow_corpus = [wdict.doc2bow(text) for text in corpus]
+
+    tfidf = models.tfidfmodel.TfidfModel(bow_corpus, normalize=True)
+    tfidf_corpus  = [tfidf[doc] for doc in bow_corpus]
     NUM_TOPICS = 100
     print "Training LDA model"
-    lda_model = LDA_train(wdict, articles, bow_corpus, NUM_TOPICS)        
-    
+    lda_model = LDA_train(wdict, articles, tfidf_corpus, NUM_TOPICS)        
     print "Converting to vector representation"
-    wordvec    =    LDA2Vec(lda_model, bow_corpus)
+    wordvec    =    LDA2Vec(lda_model, tfidf_corpus)
     g_vec = wordvec
     print "running tsne"
     coords= [coord for coord in bhtsne.bh_tsne(wordvec)]
     print "running kmeans"
     clusters = kmeans_clusters(articles.keys(), wordvec)
-    #code.interact()
     output_write(articles.keys(), coords, clusters)
-    return 
+    return lda_model
 
 def word2vec_run():
     raw_art = load_data_folder(text_dir)
@@ -205,59 +240,81 @@ def word2vec_run():
     return coords
 
 
-
-def w2v_builder(raw_art, dims, text_dir):
+def w2v_builder(raw_art, dims, text_dir, sset=None):
     s = []
-    for sentence in gen_load(text_dir):
+    for sentence in gen_load(text_dir, sset):
 	    s+=[sentence]
-    WORDVEC_SIZE=dims
     """
     All this should be configurable
     """
     print "Training Word2Vec model"
     w2v = models.Word2Vec(s, workers=4, 
                           window=5, min_count=3, 
-                          size=WORDVEC_SIZE)
+                          size=dims)
     wordvec = word2vectorize(w2v, raw_art)
-    return wordvec
+    return wordvec, w2v
 
 
-def lda_builder(articles, dims, text_dir):
-    global g_lda
+def lda_builder(articles, dims, text_dir, tfidf_on=True, sset=None):
     lda_keys = articles.keys()
     corpus = [bag_of_wordify(articles[key])
               for key in articles]
     wdict  = corpora.Dictionary(corpus)
-    bow_corpus= [wdict.doc2bow(text) 
+    bow_corpus= [wdict.doc2bow(text)
                  for text in corpus]
-    NUM_TOPICS = dims
+    inp_corpus = bow_corpus
+    if tfidf_on:
+        tfidf = models.tfidfmodel.TfidfModel(bow_corpus, normalize=True)
+        tfidf_corpus  = [tfidf[doc] for doc in bow_corpus]        
+        inp_corpus = tfidf_corpus
+
     print "Training LDA model"
     lda_model = LDA_train(wdict, articles, 
-                          bow_corpus, NUM_TOPICS)     
-    g_lda = lda_model
-    return  LDA2Vec(lda_model, bow_corpus)
+                          inp_corpus, dims)     
+    return  LDA2Vec(lda_model, inp_corpus), lda_model
 
 
-def compose(builders, sizes):
-    #function to compose a combination of features
-    articles = load_data_folder(text_dir)
+def compose(builders, sizes, articles=None):
+    """
+    function to compose a combination of features
+    """
+    sset = None
+    if not articles:
+        articles = load_data_folder(text_dir)
+    else: sset = set(articles.keys())
     keys = articles.keys()
     vector = -1
-    vector_builders = [lambda x:fn(articles,x,text_dir)
-                       for fn in builders]
-    for vbuilder, size in zip(vector_builders, sizes):
-        if type(vector)!= type(None): 
-            vector = vbuilder(size)
-        else: 
-            vector = np.append(vector, 
-                               vbuilder(size), 
-                               axis=1)
-    coords= [coord for coord in tsne(vector)]
+    trained_models = []
+
+    for builder, size in zip(builders, sizes):
+        tmp, model= builder(articles, size, text_dir, sset)
+        trained_models+=[model]
+        if type(vector)!= type(None):
+            vector = tmp
+        else:
+            vector = np.append(vector, tmp, axis=1)
+
+    print vector.shape
+    coords= [coord for coord in tsne(vector, verbose=True)]
     clusters = kmeans_clusters(keys, vector)
     output_write(keys, coords, clusters)
-    return vector
+    return vector, trained_models
         
+def subset_run(fnames):
+    if len(fnames)==0:
+        print "Not enough documents"
+        return -1
+    articles = load_specific_data(fnames, text_dir)
+    if len(articles)==0:
+        print "FAILURE"
+        return
+    print "articles loaded", len(articles)
+    compose([w2v_builder], [50], articles = articles)
+    print ("launching newly computed results on firefox")
+    os.system("firefox /visuals/index.html")
+    return True
+
 all_builders = [w2v_builder, lda_builder]
-		       	 
+
 if __name__=="__main__":
-    compose([w2v_builder], [50])
+    compose([w2v_builder, lda_builder], [50, 50])
