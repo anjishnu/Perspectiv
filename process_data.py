@@ -11,7 +11,7 @@ W2Vec = models.Word2Vec
 
 print "Modules loaded"
 
-def load_stopwords(stopfile):
+def load_stopwords(stopfile=None):        
     with open(stopfile,'r') as f: 
         return  map(lambda w: w.strip(),  f.readlines())
 
@@ -23,17 +23,22 @@ CONFIGURABLE PARAMETERS
 
 data_dir    = os.path.join(os.getcwd(),'data')
 text_dir = os.path.join(os.getcwd(), "text_data")
-OUTPUT_CSV = os.path.join(os.getcwd(),"visuals","data.csv")
-TEMP_CSV = os.path.join(os.getcwd(),"visuals","temp_data.csv")
+OUTPUT_CSV = os.path.join(os.getcwd(),"visuals","data","data.csv")
+TEMP_CSV = os.path.join(os.getcwd(),"visuals","data","temp_data.csv")
 stoplist  = load_stopwords("stopwords.txt")
 WORDVEC_SIZE = 200
 GOOGLE_DATA  = "GoogleNews-vectors-negative300.bin.gz"
 NUM_KMEANS_CLUSTERS=10
+VERBOSE = True
 
 """ 
 -------------------------------------------------------------
 -------------------------------------------------------------
 """
+
+#Utility function so that it's easy to turn printing on and off
+def printl(*args):
+    if VERBOSE: print args
 
 def load_data_folder(data_dir=data_dir):
     """
@@ -148,7 +153,7 @@ def google_model():
 
 def kmeans_clusters(keys, data_matrix, n_clusters=NUM_KMEANS_CLUSTERS):
 	""" KMeans overlayed on the word2vec features """
-        print len(keys)
+        printl(len(keys))
         if n_clusters > len(keys):
             #Not enough data
             import math
@@ -185,10 +190,6 @@ def LDA2Vec(lda_model, corpus):
             vector[index][feat_index]= value
     return vector
 
-from nltk.corpus import sentiwordnet as swn
-print "nltk loaded"
-
-
 def LDA_run():
     global g_lda, g_vec, g_coords, g_clust
     articles = load_data_folder(text_dir)
@@ -200,12 +201,16 @@ def LDA_run():
     tfidf = models.tfidfmodel.TfidfModel(bow_corpus, normalize=True)
     tfidf_corpus  = [tfidf[doc] for doc in bow_corpus]
     NUM_TOPICS = 100
-    print "Training LDA model"
+    
+    printl( "Training LDA model")
+    
     lda_model = LDA_train(wdict, articles, tfidf_corpus, NUM_TOPICS)        
-    print "Converting to vector representation"
+    print ("Converting to vector representation")
     wordvec    =    LDA2Vec(lda_model, tfidf_corpus)
     g_vec = wordvec
-    print "running tsne"
+    
+    printl ("running tsne")
+    
     coords= [coord for coord in bhtsne.bh_tsne(wordvec)]
     print "running kmeans"
     clusters = kmeans_clusters(articles.keys(), wordvec)
@@ -287,7 +292,7 @@ def compose(builders, sizes, articles=None, output_dir=None):
     perplexity = 32
     while(not tsne_success and perplexity>0):
         try:
-            print "trying perplexity", perplexity
+            printl("trying perplexity", perplexity)
             coords= [coord for coord in tsne(vector, 
                                              verbose=False, 
                                              perplexity=perplexity)]
@@ -301,16 +306,16 @@ def compose(builders, sizes, articles=None, output_dir=None):
         
 def subset_run(fnames):
     if len(fnames)==0:
-        print "Not enough documents"
+        printl ("Not enough documents")
         return -1
     articles = load_specific_data(fnames, text_dir)
     if len(articles)==0:
-        print "FAILURE"
+        printl ("FAILURE")
         return
-    print "articles loaded", len(articles)
+    printl ("articles loaded", len(articles))
     #Saving the output in another file to avoid confusion
     compose([w2v_builder], [25], articles = articles, output_dir=TEMP_CSV)
-    print ("launching newly computed results on firefox")
+    printl ("launching newly computed results on firefox")
     os.system("firefox "+ os.path.join(os.getcwd(),"visuals","temp.html"))
     return True
 
