@@ -6,16 +6,26 @@ from bhtsne import bh_tsne as tsne
 import bhtsne
 import numpy as np
 import time
+import nltk
 
 W2Vec = models.Word2Vec
 
 print "Modules loaded"
 
+def timeit(method):
+    def timed(*args, **kw):
+        ts = time.time()
+        result = method(*args, **kw)
+        te = time.time()
+
+        print '%r,  %2.2f sec' % \
+              (method.__name__, te-ts)
+        return result
+    return timed
+
 def load_stopwords(stopfile=None):        
     with open(stopfile,'r') as f: 
         return  map(lambda w: w.strip(),  f.readlines())
-
-
 
 """
 -------------------------------------------------------------
@@ -166,9 +176,13 @@ def kmeans_clusters(keys, data_matrix, n_clusters=NUM_KMEANS_CLUSTERS):
 	km.fit(data_matrix)
 	return km.predict(data_matrix)
 
-def LDA_train(wdict, articles, corpus, num_topics=100):    
-    lda_model = models.ldamodel.LdaModel(corpus, id2word=wdict, 
+@timeit
+def LDA_train(wdict, articles, corpus, num_topics=100):        
+    lda_model = models.ldamodel.LdaModel(corpus, id2word=wdict, workers=3,
                                          num_topics=num_topics)
+    #Multicore is running slower than regular LDA? Confusing.
+    #lda_model = models.LdaMulticore(corpus, id2word=wdict, workers=3,
+    #                                     num_topics=num_topics)
     lda_model.VAR_MAXITER = 5000
     lda_model.VAR_THRESH  = 0.001
     lda_model.update(corpus)
@@ -326,9 +340,9 @@ def subset_run(fnames):
 all_builders = [w2v_builder, lda_builder]
 
 
-global_builders = [w2v_builder]
+global_builders = [lda_builder]
 global_sizes = [50]
 
 if __name__=="__main__":
 
-    compose(global_builders, sizes)
+    compose(global_builders, global_sizes)
