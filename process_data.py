@@ -23,8 +23,8 @@ CONFIGURABLE PARAMETERS
 
 data_dir    = os.path.join(os.getcwd(),'data')
 text_dir = os.path.join(os.getcwd(), "text_data")
-terminals = ":,;"
-output_csv = os.path.join(os.getcwd(),"visuals","data.csv");
+OUTPUT_CSV = os.path.join(os.getcwd(),"visuals","data.csv")
+TEMP_CSV = os.path.join(os.getcwd(),"visuals","temp_data.csv")
 stoplist  = load_stopwords("stopwords.txt")
 WORDVEC_SIZE = 200
 GOOGLE_DATA  = "GoogleNews-vectors-negative300.bin.gz"
@@ -103,9 +103,8 @@ def parse_text(text):
             out_str+=letter
     return out_str.lower()
 
-def output_write(tags, valarray, clusters=None):
-    for index in tags:
-        fopen = open(output_csv,"w")
+def output_write(tags, valarray, clusters=None, output_dir=OUTPUT_CSV):
+    fopen = open(output_dir, 'w')
     wstr = ""
     fopen.write(wstr)
     wstr = "Name,Category,Type,XAxis,YAxis,\n"
@@ -149,6 +148,11 @@ def google_model():
 
 def kmeans_clusters(keys, data_matrix, n_clusters=NUM_KMEANS_CLUSTERS):
 	""" KMeans overlayed on the word2vec features """
+        print len(keys)
+        if n_clusters > len(keys):
+            #Not enough data
+            import math
+            n_clusters = int(math.ceil(math.log(len(keys))))
 	km = KMeans(n_clusters=n_clusters, n_init=25, max_iter=1000)
 	km.fit(data_matrix)
 	return km.predict(data_matrix)
@@ -183,21 +187,7 @@ def LDA2Vec(lda_model, corpus):
 
 from nltk.corpus import sentiwordnet as swn
 print "nltk loaded"
-def subjectivity_of(text):
-    sub = 0 #SUBJECTIVITY
-    w_counts = 0
-    for word in text.split():
-        ssets = swn.senti_synsets(word)
-        if ssets: 
-            sub+= 1-ssets[0].obj_score()
-            w_counts += 1;
-    return sub
 
-def senti_run(articles):
-    senti_hash = {}
-    for key in articles:
-        senti_hash[key] = subjectivity_of(articles[key])
-    return senti_hash
 
 def LDA_run():
     global g_lda, g_vec, g_coords, g_clust
@@ -207,7 +197,6 @@ def LDA_run():
     corpus = [bag_of_wordify(articles[key]) for key in articles]
     wdict  = corpora.Dictionary(corpus)
     bow_corpus = [wdict.doc2bow(text) for text in corpus]
-
     tfidf = models.tfidfmodel.TfidfModel(bow_corpus, normalize=True)
     tfidf_corpus  = [tfidf[doc] for doc in bow_corpus]
     NUM_TOPICS = 100
@@ -229,9 +218,7 @@ def word2vec_run():
     for sentence in gen_load(text_dir):
 	    s+=[sentence]    
     W2V = models.Word2Vec
-    """
-    All this should be configurablee
-    """
+    """ All this should be configurable """
     w2v = W2V(s, workers=4, window=5, min_count=3, size=WORDVEC_SIZE)
     wordvec = word2vectorize(w2v, raw_art)
     coords= [coord for coord in bhtsne.bh_tsne(wordvec)]
@@ -274,14 +261,15 @@ def lda_builder(articles, dims, text_dir, tfidf_on=True, sset=None):
     return  LDA2Vec(lda_model, inp_corpus), lda_model
 
 
-def compose(builders, sizes, articles=None):
+def compose(builders, sizes, articles=None, output_dir=None):
     """
-    function to compose a combination of features
+    Function to compose a combination of features
     """
     sset = None
     if not articles:
         articles = load_data_folder(text_dir)
     else: sset = set(articles.keys())
+
     keys = articles.keys()
     vector = -1
     trained_models = []
@@ -297,18 +285,18 @@ def compose(builders, sizes, articles=None):
     print vector.shape
     tsne_success = False
     perplexity = 32
-    while(not tsne_success):
+    while(not tsne_success and perplexity>0):
         try:
-            print "perplexity", perplexity
+            print "trying perplexity", perplexity
             coords= [coord for coord in tsne(vector, 
-                                             verbose=True, 
+                                             verbose=False, 
                                              perplexity=perplexity)]
-            tsne_success
+            tsne_success = True
         except:
             perplexity = perplexity/2
 
     clusters = kmeans_clusters(keys, vector)
-    output_write(keys, coords, clusters)
+    output_write(keys, coords, clusters, output_dir = output_dir)
     return vector, trained_models
         
 def subset_run(fnames):
@@ -320,9 +308,10 @@ def subset_run(fnames):
         print "FAILURE"
         return
     print "articles loaded", len(articles)
-    compose([w2v_builder], [25], articles = articles)
+    #Saving the output in another file to avoid confusion
+    compose([w2v_builder], [25], articles = articles, output_dir=TEMP_CSV)
     print ("launching newly computed results on firefox")
-    os.system("firefox "+ os.path.join(os.getcwd(),"visuals","index.html"))
+    os.system("firefox "+ os.path.join(os.getcwd(),"visuals","temp.html"))
     return True
 
 all_builders = [w2v_builder, lda_builder]

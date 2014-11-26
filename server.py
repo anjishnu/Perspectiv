@@ -18,17 +18,13 @@ class pind:
     def POST(self):
         i= web.input()
         text = web.data().encode('utf8')     
-        #text = "".join(i.keys()[::-1]).encode('utf8')
-        #text = i.keys()[].encode('utf8')
-        print text
         json_obj = json.loads(text)
-        #filenames = clean_json(json_obj)
-        #for name in filenames:
-        #    print name
-        #if pd.subset_run(filenames):
-        #    return "halo"
-        #else:
-        return "fail"
+        filenames = clean_json(json_obj)
+        for name in filenames:
+            print name
+        if pd.subset_run(filenames):
+            return "halo"
+        else:        return "fail"
 
     def OPTIONS(self):
         #i =  web.input()
