@@ -30,6 +30,25 @@ g++ sptree.cpp tsne.cpp -o bh_tsne -O3 -I./CBLAS/include -L/usr/lib64/atlas -L./
 ----------------
 ^Note this should be used an indicator for the kind of changes you might have to make.
 
+-------------------
+HOW TO RUN
+-------------------
+1) Put all your plain text data in Perspective/text_data/
+
+2) Run:
+   $ python server.py & 
+   (This starts the server which will is necessary for recomputation
+
+3) Run:
+   $ python process_data.py 
+   (This starts off the initial data processing and populates it in the visuals folder)
+
+4) Run:
+   $ firefox visuals/index.html
+   This should open up the D3 visualization.
+
+5) To recompute subsets. Use the mouse to click and drag over a selection area, click to select, and then 
+   click one more time to spark off the recomputation.
 
 ----------------------
 Things to Do: A.K.A. List of ugly hacks
