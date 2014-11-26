@@ -140,21 +140,37 @@ var isOn = 0;
 svg
 .on( "mousedown", function() {
     console.log("isOn",isOn);
-    if (isOn==2){
+    var p = d3.mouse(this);
+    var mouse_x = p[0];
+    var mouse_y = p[1];
 
+    if (isOn==2){
+	
+	var s = svg.select( "rect.selection");
+	var d = {
+                x       : parseInt( s.attr( "x"), 10),
+                y       : parseInt( s.attr( "y"), 10),
+                width   : parseInt( s.attr( "width"), 10),
+                height  : parseInt( s.attr( "height"), 10)
+	};
+
+	var mouseInRectangle = ((mouse_x > d.x) && (mouse_x < (d.x + d.width)) && 
+				(mouse_y > d.y) && (mouse_y < (d.y + d.height)));
+
+	if (mouseInRectangle) {
+	    var tmp = svg.selectAll("g.state.selected");
+	    console.log(JSON.stringify(tmp, null, 4));
+	    console.log("Sending request!"); 
+	    $.ajax("http://0.0.0.0:8080/post", {
+		data : JSON.stringify(tmp),
+		type : "POST"
+	    });
+	}
 	svg.selectAll( "rect.selection").remove();
-	var tmp = svg.selectAll("g.state.selected");
-	console.log(JSON.stringify(tmp, null, 4));
-	console.log("Sending request!"); 
-	$.ajax("http://0.0.0.0:8080/post", {
-            data : JSON.stringify(tmp),
-            type : "POST"
-	});
 	d3.selectAll( 'g.state.selection').classed( "selection", false);
 	d3.selectAll( 'g.selected').classed("selected", false);   
 
     } else if (isOn==0){
-
 
 	svg.selectAll( "rect.selection").remove();
 	d3.selectAll( 'g.state.selection').classed( "selection", false);
@@ -170,44 +186,40 @@ svg
 		height  : 0
 	    });
 
-
-    } else if(isOn==1){
-
-
+    } else if(isOn==1) {
 	var s = svg.select( "rect.selection");
-	d = {
+	var d = {
                 x       : parseInt( s.attr( "x"), 10),
                 y       : parseInt( s.attr( "y"), 10),
                 width   : parseInt( s.attr( "width"), 10),
                 height  : parseInt( s.attr( "height"), 10)
-            }
-	d3.selectAll('g.state.selection.selected').classed( "selected", false);
-	console.log("selecting");
-	console.log(JSON.stringify(tmp, null, 4));
-	d3.selectAll('.dot').each( function( state_data, i) {
-	    var cx = parseInt(d3.select(this).attr("cx"));
-	    var cy = parseInt(d3.select(this).attr("cy"));
-	    
-	    // check to see if circle inside selection frame
-            if(!d3.select( this).classed( "selected") && 
-                cx-radius>=d.x && cx+radius<=d.x+d.width && 
-                cy-radius>=d.y && cy+radius<=d.y+d.height) 
-	    {		
-                d3.select( this.parentNode)
-                .classed( "selection", true)
-                .classed( "selected", true);
-                console.log("adding selection");
-            }
-      });
-
-
+	};
+	    d3.selectAll('g.state.selection.selected').classed( "selected", false);
+	    console.log("selecting");
+	    console.log(JSON.stringify(tmp, null, 4));
+	    d3.selectAll('.dot').each( 
+		function( state_data, i) {
+		    var cx = parseInt(d3.select(this).attr("cx"));
+		    var cy = parseInt(d3.select(this).attr("cy"));
+		    // check to see if circle inside selection frame
+		    if(!d3.select( this).classed( "selected") && 
+                       cx-radius>=d.x && cx+radius<=d.x+d.width && 
+                       cy-radius>=d.y && cy+radius<=d.y+d.height) 
+		    {		
+			d3.select( this.parentNode)
+			    .classed( "selection", true)
+			    .classed( "selected", true);
+			console.log("adding selection");
+		    }
+		}
+	    );
     }
     isOn = (isOn+1)%3;
 })
 .on( "mousemove", function() {
     var s = svg.select( "rect.selection");
     if( !s.empty() && isOn==1) {
-        var p = d3.mouse( this),
+        var p = d3.mouse(this),
             d = {
                 x       : parseInt( s.attr( "x"), 10),
                 y       : parseInt( s.attr( "y"), 10),

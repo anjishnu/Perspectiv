@@ -15,6 +15,8 @@ def load_stopwords(stopfile=None):
     with open(stopfile,'r') as f: 
         return  map(lambda w: w.strip(),  f.readlines())
 
+
+
 """
 -------------------------------------------------------------
 CONFIGURABLE PARAMETERS
@@ -25,12 +27,14 @@ data_dir    = os.path.join(os.getcwd(),'data')
 text_dir = os.path.join(os.getcwd(), "text_data")
 OUTPUT_CSV = os.path.join(os.getcwd(),"visuals","data","data.csv")
 TEMP_CSV = os.path.join(os.getcwd(),"visuals","data","temp_data.csv")
-stoplist  = load_stopwords("stopwords.txt")
 WORDVEC_SIZE = 200
 GOOGLE_DATA  = "GoogleNews-vectors-negative300.bin.gz"
 NUM_KMEANS_CLUSTERS=10
 VERBOSE = True
 
+
+#stoplist  = load_stopwords("stopwords.txt")
+stoplist = nltk.corpus.stopwords.words()
 """ 
 -------------------------------------------------------------
 -------------------------------------------------------------
@@ -314,12 +318,17 @@ def subset_run(fnames):
         return
     printl ("articles loaded", len(articles))
     #Saving the output in another file to avoid confusion
-    compose([w2v_builder], [25], articles = articles, output_dir=TEMP_CSV)
+    compose(global_builders, global_sizes, articles = articles, output_dir=TEMP_CSV)
     printl ("launching newly computed results on firefox")
     os.system("firefox "+ os.path.join(os.getcwd(),"visuals","temp.html"))
     return True
 
 all_builders = [w2v_builder, lda_builder]
 
+
+global_builders = [w2v_builder]
+global_sizes = [50]
+
 if __name__=="__main__":
-    compose([w2v_builder, lda_builder], [50, 50])
+
+    compose(global_builders, sizes)
