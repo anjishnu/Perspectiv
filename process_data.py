@@ -295,7 +295,18 @@ def compose(builders, sizes, articles=None):
             vector = np.append(vector, tmp, axis=1)
 
     print vector.shape
-    coords= [coord for coord in tsne(vector, verbose=True)]
+    tsne_success = False
+    perplexity = 32
+    while(not tsne_success):
+        try:
+            print "perplexity", perplexity
+            coords= [coord for coord in tsne(vector, 
+                                             verbose=True, 
+                                             perplexity=perplexity)]
+            tsne_success
+        except:
+            perplexity = perplexity/2
+
     clusters = kmeans_clusters(keys, vector)
     output_write(keys, coords, clusters)
     return vector, trained_models
@@ -309,9 +320,9 @@ def subset_run(fnames):
         print "FAILURE"
         return
     print "articles loaded", len(articles)
-    compose([w2v_builder], [50], articles = articles)
+    compose([w2v_builder], [25], articles = articles)
     print ("launching newly computed results on firefox")
-    os.system("firefox /visuals/index.html")
+    os.system("firefox "+ os.path.join(os.getcwd(),"visuals","index.html"))
     return True
 
 all_builders = [w2v_builder, lda_builder]
