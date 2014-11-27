@@ -22,15 +22,12 @@ CBLAS libraries are located in your machine.
 - Recently while setting up bh_tsne on a linux dev server - I had to change the compile_linux 
 file as follows:
 ----------------
-CBLAS=/usr/lib64/atlas
-g++ sptree.cpp tsne.cpp -o bh_tsne -O3 -I./CBLAS/include -L/usr/lib64/atlas -L./ -lcblas
+<br>CBLAS=/usr/lib64/atlas
+<br>g++ sptree.cpp tsne.cpp -o bh_tsne -O3 -I./CBLAS/include -L/usr/lib64/atlas -L./ -lcblas
+<br>
+<br>#g++ sptree.cpp tsne.cpp -o bh_tsne -O3 -I./CBLAS/include -L./ -lcblas
+<br>#Original code ^Note this should be used an indicator for the kind of changes you might have to make.
 
-# \/ This is the original 
-#g++ sptree.cpp tsne.cpp -o bh_tsne -O3 -I./CBLAS/include -L./ -lcblas
-----------------
-^Note this should be used an indicator for the kind of changes you might have to make.
-
--------------------
 HOW TO RUN
 -------------------
 1) Put all your plain text data in Perspective/text_data/
@@ -54,20 +51,24 @@ HOW TO RUN
 Things to Do: A.K.A. List of ugly hacks
 ---------------------
 (0) TODO: Improve the README
+
     It doesn't seem to be good enough right now, would love some feedback on how to improve it.
 
 (1) TODO: Understanding BH_TSNE and Perplexity 
+
     (With very low number of articles, bhtsne errors out citing 'Perplexity too high', right now I'm dealing 
     with it using a exponential backoff technique to recompute things with a lower perplexity if 
     the code errors out - the elegantway would be to figure out what perplexity to use computationally)
 
-(2) TODO:
+(2) TODO: What happens during JSON overflow?
+
     Disover limitations of JSON Request Size (Just how much data can we safely send via an Async JQuery request)
     Right we haven't hit any barriers related to request size, but if we want to handle massive data sizes
     this could be an issue.
 
-(3) TODO:
-    Optimize JSON Request - Currently the request is sending over a lot of metadata to the server - this can
+(3) TODO: Optimize JSON Request using Indexing
+
+    Currently the request is sending over a lot of metadata to the server - this can
     be reduced by at least 95% by incorporating consistent indices and sending back concise metadata. Should
     allow our prototype to handle a lot more data.
 
