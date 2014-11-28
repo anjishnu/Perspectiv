@@ -88,6 +88,11 @@ Things to Do: A.K.A. List of ugly hacks
     caching some precomputed vectors, either on memory or to disk.
 
 (7) Improve GUI, add navigation:
-    
+
     The current GUI is very basic, need to add some buttons to make the recomputation more intuitive instead of
     trying to invoke it on every third click.
+    
+(8) LDA_Multicore Mystery:
+
+      I'm not quite sure why, but Multicore LDA is running slower than vanilla LDA. Can't quite figure out why.
+      Right now both are in the code and the single threaded version has been enabled.
