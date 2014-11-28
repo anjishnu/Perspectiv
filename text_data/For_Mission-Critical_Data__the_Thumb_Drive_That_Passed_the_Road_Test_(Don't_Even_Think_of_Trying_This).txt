@@ -1,8 +1,0 @@
-
-        Key-chain thumb drives that pop into a computer's U.S.B. port, carrying hundreds of documents, songs or pictures, are suddenly everywhere. Their convenience and shrinking price -- some sell for less than $10 -- have made them standard operating equipment for academics and businesspeople taking their homework home. But their small size and sheer ubiquity create a security hole big enough to drive a car through.
-        That may be what inspired a recent experiment by engineers at Kingston Technology. One backed his Nissan 350Z over the company's new Data Traveler Secure Privacy Edition to test its waterproof titanium case. It survived with the data intact, but needed a session with some pliers to mate it with a PC again.
-        The three-inch-long device, priced from $53 to $297 in sizes from 512 megabytes to 4 gigabytes, will be available at major online retailers this week. The data inside is not just password-protected but also scrambled using high-strength 256-bit encryption.
-        In a feature reminiscent of ''Mission: Impossible,'' an onboard 32-bit processor erases the drive if there are 10 consecutive failed attempts to log in. After the data has been destroyed, the unit can be reset and reused, but those secrets are gone.
-        MARTY KATZ
-        CIRCUITS
-      
