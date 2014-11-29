@@ -1,6 +1,7 @@
 import web
 import json
 import process_data as pd
+from argparse import ArgumentParser
 
 urls = (
     '/', 'index',
@@ -37,5 +38,10 @@ def clean_json(dirty_json):
     return map(name_of, dirty_json)
 
 if __name__ == "__main__":
+    parser = ArgumentParser()
+    parser.add_argument("-r","--run", dest="run", help="kick off computation")
+    args = parser.parse_args()
+    if args.run:
+        pd.compose(pd.global_builders, pd.global_sizes)
     app = web.application(urls, globals())
     app.run()
