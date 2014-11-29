@@ -178,7 +178,7 @@ def kmeans_clusters(keys, data_matrix, n_clusters=NUM_KMEANS_CLUSTERS):
 
 @timeit
 def LDA_train(wdict, articles, corpus, num_topics=100):        
-    lda_model = models.ldamodel.LdaModel(corpus, id2word=wdict, workers=3,
+    lda_model = models.ldamodel.LdaModel(corpus, id2word=wdict,
                                          num_topics=num_topics)
     #Multicore is running slower than regular LDA? Confusing.
     #lda_model = models.LdaMulticore(corpus, id2word=wdict, workers=3,
@@ -340,7 +340,7 @@ def subset_run(fnames):
 all_builders = [w2v_builder, lda_builder]
 
 
-global_builders = [lda_builder]
+global_builders = [w2v_builder]
 global_sizes = [50]
 
 if __name__=="__main__":
