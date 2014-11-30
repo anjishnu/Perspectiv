@@ -50,6 +50,18 @@ stoplist = nltk.corpus.stopwords.words()
 -------------------------------------------------------------
 """
 
+
+"""
+#SIMPLECACHE (Global Variables)
+"""
+cached_model = None
+cached_w2v   = None
+cached_lda   = None
+cached_tsne  = None
+"""
+#ENDCACHE
+"""
+
 #Utility function so that it's easy to turn printing on and off
 def printl(*args):
     if VERBOSE: print args
@@ -123,21 +135,29 @@ def parse_text(text):
             out_str+=letter
     return out_str.lower()
 
-def output_write(tags, valarray, clusters=None, output_dir=OUTPUT_CSV):
+def output_write(tags, valarray, clusters=None, output_dir=OUTPUT_CSV, indices=None):
+
     print output_dir
     fopen = open(output_dir, 'w')
     wstr = ""
     fopen.write(wstr)
     wstr = "Name,Category,Type,XAxis,YAxis,\n"
     fopen.write(wstr)
-    template = "{0}, {3}, JUNK, {1}, {2},\n"
+    """
+    TYPE -> We'll use type as our Index
+    """
+    template = "{0}, {3}, {4}, {1}, {2},\n"
     for index, key in enumerate(tags):
         if type(clusters)!=type(None): 
-            wstr = template.format(key.replace("_"," "), valarray[index][0], 
+            #For subset computation case
+            if (indices!=None): index = indices[index]
+
+            wstr = template.format(key, valarray[index][0], 
                                    valarray[index][1], 
-                                   "class_"+str(clusters[index]))
+                                   "class_"+str(clusters[index]),
+                                   str(index))
 	else: 
-            wstr = template.format(key.replace("_"," "),valarray[index][0], 
+            wstr = template.format(key, valarray[index][0], 
                                    valarray[index][1], "JUNK")
         fopen.write(wstr)
     fopen.close()
@@ -151,8 +171,8 @@ def word2vectorize(w2v , articles):
 	vector = np.zeros((len(articles), w2v.layer1_size) )
 	for index, key in enumerate(articles):
 		count=0
-                print articles[key]
-                print "-----------BREAK------------"
+                #print articles[key]
+                #print "-----------BREAK------------"
 		for word in articles[key].split():
 			if word in w2v:
 				vector[index]+=w2v[word]
@@ -288,30 +308,34 @@ def lda_builder(articles, dims, text_dir, tfidf_on=True, sset=None):
     return  LDA2Vec(lda_model, inp_corpus), lda_model
 
 
-def compose(builders, sizes, articles=None, output_dir=OUTPUT_CSV):
+def compose(builders, sizes, articles=None, output_dir=OUTPUT_CSV,
+            vector=None, keys=None, indices=None, sset=None):
     """
     Function to compose a combination of features
     """
     global gvec
-    sset = None
-    if not articles:
-        articles = load_data_folder(text_dir)
-        gvec = articles
-    else: sset = set(articles.keys())
 
-    keys = articles.keys()
-    vector = -1
-    trained_models = []
+    
+    if (not vector or not keys):
+        #If vector isn't provided
+        sset = None
+        if not articles:
+            articles = load_data_folder(text_dir)
+            gvec = articles
+        else: sset = set(articles.keys())
+        keys = articles.keys()
+        vector = -1
+        trained_models = []
 
-    for builder, size in zip(builders, sizes):
-        tmp, model= builder(articles, size, text_dir, sset)
-        trained_models+=[model]
-        if type(vector)!= type(None):
-            vector = tmp
-        else:
-            vector = np.append(vector, tmp, axis=1)
+        for builder, size in zip(builders, sizes):
+            tmp, model= builder(articles, size, text_dir, sset)
+            trained_models+=[model]
+            if type(vector)!= type(None):
+                vector = tmp
+            else:
+                vector = np.append(vector, tmp, axis=1)
+        print vector.shape
 
-    print vector.shape
     tsne_success = False
     perplexity = 32
     while(not tsne_success and perplexity>0):
@@ -323,9 +347,16 @@ def compose(builders, sizes, articles=None, output_dir=OUTPUT_CSV):
             tsne_success = True
         except:
             perplexity = perplexity/2
-
+    
     clusters = kmeans_clusters(keys, vector)
-    output_write(keys, coords, clusters, output_dir = output_dir)
+    output_write(keys, coords, clusters, indices=indices,
+                 output_dir = output_dir)
+    
+    """Caching"""
+    if(not sset):
+        global cached_model, cached_tsne
+        cached_model = vector
+        cached_tsne  = coords
     return vector, trained_models
         
 def subset_run(fnames):
@@ -338,11 +369,33 @@ def subset_run(fnames):
         return
     printl ("articles loaded", len(articles))
     #Saving the output in another file to avoid confusion
-    compose(global_builders, global_sizes, articles = articles, output_dir=TEMP_CSV)
+    compose(global_builders, global_sizes, 
+            articles = articles, output_dir=TEMP_CSV)
     printl ("launching newly computed results on firefox")
     os.system("firefox "+ os.path.join(os.getcwd(),"visuals","temp.html"))
     return True
 
+def subset_run_mem(indices, fnames):
+    if len(indices)==0:
+        print "Not enough documents"
+    if (cached_model!=None):
+        n_dims = cached_model.shape[1]
+        vector = np.zeros((len(indices), n_dims))
+        count = 0
+        for index in indices:
+            vector[count]+=cached_model[index]
+            count+=1
+        # New vector has been computed from old one.
+        compose(global_builders, global_sizes, 
+                vector = vector, keys=fnames,
+                output_dir=TEMP_CSV, sset=True)
+        printl ("launching newly computed results on firefox")
+        os.system("firefox "+ os.path.join(os.getcwd(),"visuals","temp.html"))
+    else:
+        subset_run(fnames)
+            
+            
+        
 all_builders = [w2v_builder, lda_builder]
 
 
