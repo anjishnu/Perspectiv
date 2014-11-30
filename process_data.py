@@ -78,8 +78,9 @@ def load_doc(fpath):
         text = map(lambda t: unicode(t, errors='replace'), text)
         text = map(parse_text, text)
         text = map(lambda inp: inp.lower(), text)
-        if len(text)>1:
-            text = reduce(lambda x,y:x+y, text)
+        #if len(text)>1:
+            #text = reduce(lambda x,y:x+y, text)
+        text = "".join(text)   
     return text
 
 def load_raw(fpath):
@@ -95,7 +96,7 @@ def gen_load(data_dir, sset):
     for article in article_list:
 		fpath = os.path.join(data_dir,article)
 		with open(fpath, 'r') as f:
-			text = f.readlines() + [article.rpartition(".txt")[0]]
+			text = [article.rpartition(".txt")[0]]+f.readlines()
 			text = map(parse_text, text)
 			text = map(lambda line: line.split(), text)
 			text = reduce(lambda x,y : x+y, text)
@@ -123,6 +124,7 @@ def parse_text(text):
     return out_str.lower()
 
 def output_write(tags, valarray, clusters=None, output_dir=OUTPUT_CSV):
+    print output_dir
     fopen = open(output_dir, 'w')
     wstr = ""
     fopen.write(wstr)
@@ -149,6 +151,8 @@ def word2vectorize(w2v , articles):
 	vector = np.zeros((len(articles), w2v.layer1_size) )
 	for index, key in enumerate(articles):
 		count=0
+                print articles[key]
+                print "-----------BREAK------------"
 		for word in articles[key].split():
 			if word in w2v:
 				vector[index]+=w2v[word]
@@ -177,7 +181,7 @@ def kmeans_clusters(keys, data_matrix, n_clusters=NUM_KMEANS_CLUSTERS):
 	return km.predict(data_matrix)
 
 @timeit
-def LDA_train(wdict, articles, corpus, num_topics=100):        
+def LDA_train(wdict, articles, corpus, num_topics=100):      
     lda_model = models.ldamodel.LdaModel(corpus, id2word=wdict,
                                          num_topics=num_topics)
     #Multicore is running slower than regular LDA? Confusing.
@@ -284,13 +288,15 @@ def lda_builder(articles, dims, text_dir, tfidf_on=True, sset=None):
     return  LDA2Vec(lda_model, inp_corpus), lda_model
 
 
-def compose(builders, sizes, articles=None, output_dir=None):
+def compose(builders, sizes, articles=None, output_dir=OUTPUT_CSV):
     """
     Function to compose a combination of features
     """
+    global gvec
     sset = None
     if not articles:
         articles = load_data_folder(text_dir)
+        gvec = articles
     else: sset = set(articles.keys())
 
     keys = articles.keys()
@@ -344,5 +350,4 @@ global_builders = [w2v_builder]
 global_sizes = [50]
 
 if __name__=="__main__":
-
     compose(global_builders, global_sizes)

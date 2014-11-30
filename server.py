@@ -39,7 +39,9 @@ def clean_json(dirty_json):
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("-r","--run", dest="run", help="kick off computation")
+    parser.add_argument("-r","--run", dest="run",
+                        action = "store_true",
+                        help="kick off computation")
     args = parser.parse_args()
     if args.run:
         pd.compose(pd.global_builders, pd.global_sizes)

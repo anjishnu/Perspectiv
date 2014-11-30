@@ -53,7 +53,7 @@ def showMbox(mbox_path, output_path=outpath, labels=None):
                 and len(msg['Subject'])!=0):           
 
                 print "Message Number", counter, msg['Subject']
-                msgStr+=msg['Subject']
+                msgStr+= (msg['Subject']+'\n\n')
                 payloadstr = showPayload(msg)
 
                 if (payloadstr!=None):
