@@ -1,3 +1,4 @@
+
 from gensim import corpora, models, similarities
 import os, string
 from collections import defaultdict
@@ -141,12 +142,12 @@ def output_write(tags, valarray, clusters=None, output_dir=OUTPUT_CSV, indices=N
     fopen = open(output_dir, 'w')
     wstr = ""
     fopen.write(wstr)
-    wstr = "Name,Category,Type,XAxis,YAxis,\n"
+    wstr = "Name,Category,Index,XAxis,YAxis,\n"
     fopen.write(wstr)
     """
     TYPE -> We'll use type as our Index
     """
-    template = "{0}, {3}, {4}, {1}, {2},\n"
+    template = "{0},{3},{4},{1},{2},\n"
     for index, key in enumerate(tags):
         if type(clusters)!=type(None): 
             #For subset computation case
@@ -154,7 +155,7 @@ def output_write(tags, valarray, clusters=None, output_dir=OUTPUT_CSV, indices=N
 
             wstr = template.format(key, valarray[index][0], 
                                    valarray[index][1], 
-                                   "class_"+str(clusters[index]),
+                                   clusters[index],
                                    str(index))
 	else: 
             wstr = template.format(key, valarray[index][0], 
@@ -255,7 +256,11 @@ def LDA_run():
     
     coords= [coord for coord in bhtsne.bh_tsne(wordvec)]
     print "running kmeans"
-    clusters = kmeans_clusters(articles.keys(), wordvec)
+    if(classes==None):
+        clusters = kmeans_clusters(articles.keys(), wordvec)
+    else:
+        #Avoid kmeans if classes are already provided
+        clusters = classes
     output_write(articles.keys(), coords, clusters)
     return lda_model
 
@@ -309,14 +314,15 @@ def lda_builder(articles, dims, text_dir, tfidf_on=True, sset=None):
 
 
 def compose(builders, sizes, articles=None, output_dir=OUTPUT_CSV,
-            vector=None, keys=None, indices=None, sset=None):
+            vector=None, keys=None, indices=None, sset=None,
+            classes=None):
     """
     Function to compose a combination of features
     """
     global gvec
 
     
-    if (not vector or not keys):
+    if (vector==None or keys==None):
         #If vector isn't provided
         sset = None
         if not articles:
@@ -348,8 +354,10 @@ def compose(builders, sizes, articles=None, output_dir=OUTPUT_CSV,
         except:
             perplexity = perplexity/2
     
-    clusters = kmeans_clusters(keys, vector)
-    output_write(keys, coords, clusters, indices=indices,
+    if (classes == None):
+        clusters = kmeans_clusters(keys, vector)
+    else: clusters = classes
+    output_write(keys, coords, clusters=clusters, indices=indices,
                  output_dir = output_dir)
     
     """Caching"""
@@ -357,7 +365,7 @@ def compose(builders, sizes, articles=None, output_dir=OUTPUT_CSV,
         global cached_model, cached_tsne
         cached_model = vector
         cached_tsne  = coords
-    return vector, trained_models
+    return vector
         
 def subset_run(fnames):
     if len(fnames)==0:
@@ -375,7 +383,7 @@ def subset_run(fnames):
     os.system("firefox "+ os.path.join(os.getcwd(),"visuals","temp.html"))
     return True
 
-def subset_run_mem(indices, fnames):
+def subset_run_mem(indices, fnames, classes=None):
     if len(indices)==0:
         print "Not enough documents"
     if (cached_model!=None):
@@ -388,7 +396,8 @@ def subset_run_mem(indices, fnames):
         # New vector has been computed from old one.
         compose(global_builders, global_sizes, 
                 vector = vector, keys=fnames,
-                output_dir=TEMP_CSV, sset=True)
+                output_dir=TEMP_CSV, sset=True,
+                classes = classes)
         printl ("launching newly computed results on firefox")
         os.system("firefox "+ os.path.join(os.getcwd(),"visuals","temp.html"))
     else:

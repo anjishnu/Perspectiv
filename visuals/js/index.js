@@ -22,8 +22,8 @@ var yValue = function(d) { return d["YAxis"];}, // data -> value
     yAxis = d3.svg.axis().scale(yScale).orient("left");
 
 // setup fill color
-var cValue = function(d) { return d.Category;},
-    color = d3.scale.category20();
+var cValue = function(d) { return d.Category;}, 
+color = d3.scale.category20().domain(d3.range(10));
 
 var radius = 3.5;
 
@@ -87,7 +87,7 @@ d3.csv("data/data.csv", function(error, data) {
       .attr("r", 3.5)
       .attr("cx", xMap)
       .attr("cy", yMap)
-      .style("fill", function(d) { return color(cValue(d));}) 
+      .style("fill", function(d) { return color(cValue(d));})
       .on("mouseover", function(d) {
           tooltip.transition()
                .duration(200)

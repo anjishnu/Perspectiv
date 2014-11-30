@@ -22,11 +22,12 @@ class pind:
         text = web.data().encode('utf8')     
         json_obj = json.loads(text)
         print "JSON OBJECT:\n\n\n",json_obj
-        filenames, indices = clean_json(json_obj)
+        filenames, indices, classes = clean_json(json_obj)
         for name in filenames:
             print name
-        if pd.subset_run_mem(indices=indices,
-                             fnames=filenames):
+        if pd.subset_run_mem(indices = indices,
+                             fnames  = filenames,
+                             classes = classes):
             return "halo"
         else:        return "fail"
 
@@ -36,11 +37,15 @@ class pind:
         return
 
 def clean_json(dirty_json):
+
     dirty_json = dirty_json[0]
     name_of  = lambda x: x['__data__']['Name']
-    index_of = lambda x: x['__data__']['Type']
+    index_of = lambda x: x['__data__']['Index']
+    class_of = lambda x: x['__data__']['Category']
+
     return (map(name_of, dirty_json), 
-            map(int, map(index_of, dirty_json)))
+            map(int, map(index_of, dirty_json)),
+            map(class_of, dirty_json))
 
 if __name__ == "__main__":
     parser = ArgumentParser()

@@ -26,7 +26,7 @@ class HTMLStripper(HTMLParser):
 def baseparse(inp_string):
     out = []
     for letter in inp_string:
-        if letter not in string.punctuation:
+        if letter in (string.letters+" "+string.digits):
             out+=[letter]
     return "".join(out).replace(" ", "_")
 
