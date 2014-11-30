@@ -82,6 +82,8 @@ def parse_email(payload_str):
     msg_str=msg_str.replace('<br>','\n')
     return msg_str
 
+SAMPLE_SIZE = 200
+
 def showPayload(msg):
     payload = msg.get_payload()
     msgBody = ""
@@ -92,9 +94,11 @@ def showPayload(msg):
             div = '------------------------------'
     else:
         #print msg.get_content_type()
-        #Restriction size to small messages
-        #msgBody = payload[:200]
-        msgBody = payload
+        #Restrict size to small messages
+
+        msgBody = payload[:SAMPLE_SIZE]
+        
+        #msgBody = payload
     return msgBody
 
 
@@ -111,8 +115,13 @@ if __name__ == '__main__':
                         dest="labels", type=str, nargs="*", 
                         default=all_labels,
                         help="types of mails to extract - Trash, Important, Inbox, Chat, Starred, Unread, Sent")
-    args = parser.parse_args()
+    parser.add_argument("-s","--size", type=int,
+                        default = 200, dest = 'size',
+                        help="Email corpus is too large for ML- set sample size of email to mine (in letters)- default:200")
 
+
+    args = parser.parse_args()
+    SAMPLE_SIZE = args.size
     if not (args.input or args.output):
         parser.error("Required: both --input and --output paths")
     else:
@@ -124,18 +133,20 @@ if __name__ == '__main__':
             print "MBOX File:", args.input
         
         if not(os.path.isdir(args.output)):
-            parser.error("output path doesn't exist")
+            #parser.error("output path doesn't exist")
             print args.output, "is not a directory"
             print "creating", args.output
             os.makedirs(args.output)
+            print "Output Dir:", args.output
         else:
             print "Output Dir:", args.output
-
+        
         lc_labels = map(lambda t: t.lower(), all_labels)
         verified_labels = []
         for label in args.labels:
             if label.lower() not in lc_labels:
-                parser.error("Invalid label, "+label+" please check help for for valid labels")
+                parser.error("Invalid label, " + label + 
+                             " please check help for for valid labels")
             else:
                 verified_labels+=[label]
         print "Labels", verified_labels
