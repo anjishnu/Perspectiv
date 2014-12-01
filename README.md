@@ -9,7 +9,9 @@ DEPENDENCIES:
 - Python 2.7 
 - Natural Language Tool Kit: http://www.nltk.org/
 - Scikit-Learn:  http://scikit-learn.org/stable/
+- Gensim: http://radimrehurek.com/gensim/
 - Barnes-Hut TSNE Implementation: https://github.com/ninjin/barnes-hut-sne
+- Web.py: http://webpy.org/install
 
 Pain Points:
 ------------
