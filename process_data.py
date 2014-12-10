@@ -1,4 +1,3 @@
-
 from gensim import corpora, models, similarities
 import os, string
 from collections import defaultdict
@@ -348,10 +347,12 @@ def compose(builders, sizes, articles=None, output_dir=OUTPUT_CSV,
         try:
             printl("trying perplexity", perplexity)
             coords= [coord for coord in tsne(vector, 
-                                             verbose=False, 
+                                             verbose=True, 
                                              perplexity=perplexity)]
             tsne_success = True
-        except:
+        except Exception as e:
+            print type(e) 
+            print e.message
             perplexity = perplexity/2
     
     if (classes == None):
