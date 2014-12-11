@@ -292,6 +292,12 @@ def w2v_builder(raw_art, dims, text_dir, sset=None):
     wordvec = word2vectorize(w2v, raw_art)
     return wordvec, w2v
 
+def google_builder(articles, dims, text_dir):
+    print "Using Google's model"
+    dims = 300 #Constant because we are working with Google vectors
+    w2v = google_model()
+    wordvec = word2vectorize(w2v, articles)
+    return wordvec, w2v
 
 def lda_builder(articles, dims, text_dir, tfidf_on=True, sset=None):
     lda_keys = articles.keys()
