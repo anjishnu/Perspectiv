@@ -84,12 +84,12 @@ Things to Do: A.K.A. List of ugly hacks
 
     The subset runs after  should be made configurable somehow.
 
-(6) TODO: Caching and Precomputation:
+(6) TODO: Caching and Precomputation: #DONE
 
     The subset computations can be quite slow for massive data sizes. We might be able to speed things up by
     caching some precomputed vectors, either on memory or to disk.
 
-(7) Improve GUI, add navigation:
+(7) Improve GUI, add navigation: #DONE
 
     The current GUI is very basic, need to add some buttons to make the recomputation more intuitive instead of
     trying to invoke it on every third click.
@@ -98,3 +98,8 @@ Things to Do: A.K.A. List of ugly hacks
 
       I'm not quite sure why, but Multicore LDA is running slower than vanilla LDA. Can't quite figure out why.
       Right now both are in the code and the single threaded version has been enabled.
+
+(8) Code Clean and Object Orientation:
+
+      Right now, a lot of the codebase is in a mess using global variables caches etc. I want to clean it up and convert it in
+      into suitable objects to make the system more extensible. 
