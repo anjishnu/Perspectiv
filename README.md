@@ -30,6 +30,17 @@ file as follows:
 <br>#g++ sptree.cpp tsne.cpp -o bh_tsne -O3 -I./CBLAS/include -L./ -lcblas
 <br>#Original code ^Note this should be used an indicator for the kind of changes you might have to make.
 
+INSTALLATION GUIDE FOR MACS
+----------------------------
+- install anaconda https://store.continuum.io/cshop/anaconda/
+- "export PATH=~/anaconda/bin:$PATH" (from http://docs.continuum.io/anaconda/faq.html)
+- "conda install gensim"
+- "conda install -c https://conda.binstar.org/dmnapolitano web.py"
+- in terminal: python -> import nltk -> nltk.download() -> click on corpora -> double click stopwords to download stopwords list
+- git clone the bh_tsne repo: -> "./compile_mac" -> copy newly generated script bh_tsne/bh_tsne to Perspectiv folder replacing the default one (which is compiled on a linux box)
+- Put your plain text data in ./text_data/ folder
+- $ python server.py
+
 HOW TO RUN
 -------------------
 1) Put all your plain text data in Perspective/text_data/
