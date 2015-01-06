@@ -2,8 +2,10 @@ from gensim import corpora, models, similarities
 import os, string
 from collections import defaultdict
 from sklearn.cluster import KMeans
+from sklearn.manifold import TSNE as sk_tsne
 from bhtsne import bh_tsne as tsne
 import bhtsne
+import py_tsne
 import numpy as np
 import time
 import nltk
@@ -347,6 +349,7 @@ def compose(builders, sizes, articles=None, output_dir=OUTPUT_CSV,
                 vector = np.append(vector, tmp, axis=1)
         print vector.shape
 
+    gvec = vector
     tsne_success = False
     perplexity = 32
     while(not tsne_success and perplexity>0):
@@ -360,10 +363,32 @@ def compose(builders, sizes, articles=None, output_dir=OUTPUT_CSV,
             print type(e) 
             print e.message
             perplexity = perplexity/2
-    
+
+    if (tsne_success == False):
+        print "T-SNE failed - all perplexity settings not working" 
+        print "Use Scikit-Learn's implementation of TSNE"
+        perplexity = 32
+        while(not tsne_success and perplexity>0):
+            try:
+                model = sk_tsne(n_components=2, random_state=0,
+                                perplexity = perplexity)
+                t1 = time.time()
+                output = model.fit_transform(vector)
+                coords = [pair for pair in output]
+                t2 = time.time()
+                print "Time taken:", t2-t1, "seconds"
+                tsne_success = True
+            except Exception as e:
+                print type(e)
+                print e
+                print e.message
+                perplexity/=2
+                
     if (classes == None):
         clusters = kmeans_clusters(keys, vector)
-    else: clusters = classes
+    else: 
+        clusters = classes
+    
     output_write(keys, coords, clusters=clusters, indices=indices,
                  output_dir = output_dir)
     
